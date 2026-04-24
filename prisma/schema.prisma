@@ -1,4 +1,4 @@
-// Existing contents above ...
+// --- NEWS ---
 model News {
   id          Int      @id @default(autoincrement())
   title       String
@@ -8,6 +8,7 @@ model News {
   updatedAt   DateTime @updatedAt
   imageUrl    String?
 }
+
 enum Category {
   TRANSFER
   MATCH
@@ -16,4 +17,78 @@ enum Category {
   ANALYSIS
   FAN_OPINION
   OTHER
+}
+
+// --- FAN ZONE ---
+model ForumCategory {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  forums    Forum[]
+  createdAt DateTime  @default(now())
+}
+
+model Forum {
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String
+  category    ForumCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  topics      ForumTopic[]
+  createdAt   DateTime    @default(now())
+}
+
+model ForumTopic {
+  id        Int       @id @default(autoincrement())
+  title     String
+  authorId  Int
+  forum     Forum     @relation(fields: [forumId], references: [id])
+  forumId   Int
+  posts     ForumPost[]
+  createdAt DateTime  @default(now())
+  author    User      @relation(fields: [authorId], references: [id])
+}
+
+model ForumPost {
+  id        Int       @id @default(autoincrement())
+  content   String
+  topic     ForumTopic   @relation(fields: [topicId], references: [id])
+  topicId   Int
+  authorId  Int
+  createdAt DateTime  @default(now())
+  author    User      @relation(fields: [authorId], references: [id])
+}
+
+model Poll {
+  id        Int       @id @default(autoincrement())
+  question  String
+  options   PollOption[]
+  authorId  Int
+  createdAt DateTime  @default(now())
+  author    User      @relation(fields: [authorId], references: [id])
+}
+
+model PollOption {
+  id       Int        @id @default(autoincrement())
+  text     String
+  poll     Poll       @relation(fields: [pollId], references: [id])
+  pollId   Int
+  votes    PollVote[]
+}
+
+model PollVote {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  option    PollOption @relation(fields: [optionId], references: [id])
+  optionId  Int
+  createdAt DateTime   @default(now())
+  user      User       @relation(fields: [userId], references: [id])
+}
+
+model MatchPrediction {
+  id         Int      @id @default(autoincrement())
+  match      String
+  predictedWinner String
+  userId     Int
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
 }
