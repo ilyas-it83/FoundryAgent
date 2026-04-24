@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  name      String?
+  password  String
+  createdAt DateTime @default(now())
+  // fan zone relations
+  polls     Poll[]
+}
+
+model Team {
+  id      Int     @id @default(autoincrement())
+  name    String
+  logoUrl String?
+  players Player[]
+  matchesHome Match[] @relation("HomeTeam")
+  matchesAway Match[] @relation("AwayTeam")
+  standings Standing[]
+}
+
+model Player {
+  id      Int     @id @default(autoincrement())
+  name    String
+  position String?
+  avatarUrl String?
+  team    Team   @relation(fields: [teamId], references: [id])
+  teamId  Int
+  // stats as JSON for simplicity
+  stats   Json?
+}
+
+model Match {
+  id         Int      @id @default(autoincrement())
+  homeTeam   Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  homeTeamId Int
+  awayTeam   Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  awayTeamId Int
+  date       DateTime
+  stadium    String?
+  homeScore  Int?
+  awayScore  Int?
+  players    Player[] @relation("MatchPlayers")
+  news       News[]
+}
+
+model News {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+  match     Match?   @relation(fields: [matchId], references: [id])
+  matchId   Int?
+}
+
+model Poll {
+  id       Int     @id @default(autoincrement())
+  question String
+  options  String[]
+  votes    Int[]
+  user     User    @relation(fields: [userId], references: [id])
+  userId   Int
+}
+
+model Standing {
+  id       Int     @id @default(autoincrement())
+  team     Team    @relation(fields: [teamId], references: [id])
+  teamId   Int
+  season   String
+  points   Int
+  goalsFor Int
+  goalsAgainst Int
+  wins     Int
+  draws    Int
+  losses   Int
+}
