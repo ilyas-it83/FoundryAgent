@@ -1,0 +1,19 @@
+// Existing contents above ...
+model News {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String
+  category    Category
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  imageUrl    String?
+}
+enum Category {
+  TRANSFER
+  MATCH
+  INTERVIEW
+  INJURY
+  ANALYSIS
+  FAN_OPINION
+  OTHER
+}
