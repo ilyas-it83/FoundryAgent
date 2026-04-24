@@ -1,0 +1,9 @@
+.env
+node_modules
+dist
+.vscode
+.idea
+*.log
+client/node_modules
+server/node_modules
+server/prisma/dev.db
