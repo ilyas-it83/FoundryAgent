@@ -1,0 +1,16 @@
+{
+  "name": "football-fan-website-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "dev": "concurrently \"npm:start --workspace=client\" \"npm:start --workspace=server\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
